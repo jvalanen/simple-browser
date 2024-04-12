@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 // import axios from "axios";
 import data from "./data.json";
+import dataDiograph from "./data-diograph.json";
 
 const getData = () => {
+  data.rooms[0].diograph = dataDiograph;
   return data;
 };
 
