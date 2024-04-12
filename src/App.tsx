@@ -13,6 +13,7 @@ interface ConnectionData {
   address: string;
   contentUrls: object;
   contentClientType: string;
+  diograph?: object;
 }
 
 interface RoomData {
@@ -113,10 +114,20 @@ const App: React.FC = () => {
       <div>
         Grid
         <div>
-          {roomInFocus &&
+          {/* Room grid */}
+          {!connectionInFocus &&
+            roomInFocus &&
             roomInFocus.diograph &&
             Object.values(roomInFocus.diograph).map((diory) => (
-              <div className="diory">
+              <div key={diory.id} className="diory">
+                <div>{diory.text || diory.id}</div>
+              </div>
+            ))}
+          {/* Connection grid */}
+          {connectionInFocus &&
+            connectionInFocus.diograph &&
+            Object.values(connectionInFocus.diograph).map((diory) => (
+              <div key={diory.id} className="diory">
                 <div>{diory.text || diory.id}</div>
               </div>
             ))}
