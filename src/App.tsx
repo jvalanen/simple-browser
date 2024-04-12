@@ -120,6 +120,9 @@ const App: React.FC = () => {
             roomInFocus.diograph &&
             Object.values(roomInFocus.diograph).map((diory) => (
               <div key={diory.id} className="diory">
+                {diory.image && (
+                  <img height="100" src={diory.image} alt={diory.id} />
+                )}
                 <div>{diory.text || diory.id}</div>
               </div>
             ))}
@@ -128,6 +131,9 @@ const App: React.FC = () => {
             connectionInFocus.diograph &&
             Object.values(connectionInFocus.diograph).map((diory) => (
               <div key={diory.id} className="diory">
+                {diory.image && (
+                  <img height="100" src={diory.image} alt={diory.id} />
+                )}
                 <div>{diory.text || diory.id}</div>
               </div>
             ))}
