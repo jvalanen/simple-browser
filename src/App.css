@@ -4,3 +4,14 @@
   padding: 2rem;
   text-align: center;
 }
+
+.in-focus {
+  border: 2px solid #333;
+}
+
+.diory {
+  display: inline-block;
+  border: solid 1px #333;
+  padding: 1rem;
+  margin: 1rem;
+}

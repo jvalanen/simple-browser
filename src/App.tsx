@@ -1,3 +1,4 @@
+import "./App.css";
 import React, { useState, useEffect } from "react";
 // import axios from "axios";
 import data from "./data.json";
@@ -8,14 +9,42 @@ const getData = () => {
   return data;
 };
 
+interface ConnectionData {
+  address: string;
+  contentUrls: object;
+  contentClientType: string;
+}
+
+interface RoomData {
+  id: string;
+  connections: ConnectionData[];
+  diograph?: object;
+}
+
 interface Data {
-  // Define your data structure here
+  rooms: RoomData[];
 }
 
 const App: React.FC = () => {
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [roomInFocus, setRoomInFocus] = useState<RoomData | null>(null);
+  const [connectionInFocus, setConnectionInFocus] =
+    useState<ConnectionData | null>(null);
+
+  const handleRoomClick = (roomData: RoomData) => {
+    setRoomInFocus(roomData);
+    setConnectionInFocus(null);
+  };
+
+  const handleConnectionClick = (connectionData: ConnectionData) => {
+    if (connectionData.address === connectionInFocus?.address) {
+      setConnectionInFocus(null);
+      return;
+    }
+    setConnectionInFocus(connectionData);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,6 +60,9 @@ const App: React.FC = () => {
     };
 
     fetchData();
+
+    const data = getData();
+    setRoomInFocus(data && data.rooms[0]);
   }, []);
 
   if (loading) return <div>Loading...</div>;
@@ -38,8 +70,58 @@ const App: React.FC = () => {
 
   return (
     <div>
-      {/* Render your data here */}
-      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      <div>
+        Rooms
+        <div>
+          {data &&
+            data.rooms.map((roomData) => (
+              <button
+                onClick={() => handleRoomClick(roomData)}
+                key={roomData.id}
+                className={
+                  (roomInFocus && roomInFocus.id) == roomData.id
+                    ? "in-focus"
+                    : ""
+                }
+              >
+                {roomData.id}
+              </button>
+            ))}
+        </div>
+      </div>
+      <div>
+        Connections
+        <div>
+          {roomInFocus &&
+            roomInFocus.connections &&
+            roomInFocus.connections.map((connectionData) => (
+              <button
+                key={connectionData.address}
+                onClick={() => handleConnectionClick(connectionData)}
+                className={
+                  (connectionInFocus && connectionInFocus.address) ==
+                  connectionData.address
+                    ? "in-focus"
+                    : ""
+                }
+              >
+                {connectionData.address}
+              </button>
+            ))}
+        </div>
+      </div>
+      <div>
+        Grid
+        <div>
+          {roomInFocus &&
+            roomInFocus.diograph &&
+            Object.values(roomInFocus.diograph).map((diory) => (
+              <div className="diory">
+                <div>{diory.text || diory.id}</div>
+              </div>
+            ))}
+        </div>
+      </div>
     </div>
   );
 };
