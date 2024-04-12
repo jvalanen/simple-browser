@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 // import axios from "axios";
+import data from "./data.json";
+
+const getData = () => {
+  return data;
+};
 
 interface Data {
   // Define your data structure here
@@ -14,7 +19,7 @@ const App: React.FC = () => {
     const fetchData = async () => {
       try {
         // const response = await axios.get<Data>("https://api.example.com/data");
-        const response = { data: { message: "Hello, World!" } };
+        const response = { data: getData() };
         setData(response.data);
       } catch (error) {
         setError("Error fetching data");

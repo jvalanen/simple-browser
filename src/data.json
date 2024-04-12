@@ -1,0 +1,17 @@
+{
+  "rooms": [
+    {
+      "diograph": ["diograph.json"],
+      "connections": [
+        {
+          "address": "string",
+          "contentClientType": "string",
+          "contentUrls": {
+            "ThIS-IS-conTEntID": "/this/is/a/path/to/file123.jpg"
+          },
+          "diograph": ["connectionin diograph"]
+        }
+      ]
+    }
+  ]
+}
