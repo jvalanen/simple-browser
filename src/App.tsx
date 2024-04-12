@@ -33,18 +33,24 @@ const App: React.FC = () => {
   const [roomInFocus, setRoomInFocus] = useState<RoomData | null>(null);
   const [connectionInFocus, setConnectionInFocus] =
     useState<ConnectionData | null>(null);
+  const [diographInFocus, setDiographInFocus] = useState<
+    object | null | undefined
+  >(null);
 
   const handleRoomClick = (roomData: RoomData) => {
     setRoomInFocus(roomData);
     setConnectionInFocus(null);
+    setDiographInFocus(roomData.diograph);
   };
 
   const handleConnectionClick = (connectionData: ConnectionData) => {
     if (connectionData.address === connectionInFocus?.address) {
       setConnectionInFocus(null);
+      setDiographInFocus(roomInFocus && roomInFocus.diograph);
       return;
     }
     setConnectionInFocus(connectionData);
+    setDiographInFocus(connectionData.diograph);
   };
 
   useEffect(() => {
@@ -64,6 +70,7 @@ const App: React.FC = () => {
 
     const data = getData();
     setRoomInFocus(data && data.rooms[0]);
+    setDiographInFocus(data && data.rooms[0].diograph);
   }, []);
 
   if (loading) return <div>Loading...</div>;
@@ -114,22 +121,8 @@ const App: React.FC = () => {
       <div>
         Grid
         <div>
-          {/* Room grid */}
-          {!connectionInFocus &&
-            roomInFocus &&
-            roomInFocus.diograph &&
-            Object.values(roomInFocus.diograph).map((diory) => (
-              <div key={diory.id} className="diory">
-                {diory.image && (
-                  <img height="100" src={diory.image} alt={diory.id} />
-                )}
-                <div>{diory.text || diory.id}</div>
-              </div>
-            ))}
-          {/* Connection grid */}
-          {connectionInFocus &&
-            connectionInFocus.diograph &&
-            Object.values(connectionInFocus.diograph).map((diory) => (
+          {diographInFocus &&
+            Object.values(diographInFocus).map((diory) => (
               <div key={diory.id} className="diory">
                 {diory.image && (
                   <img height="100" src={diory.image} alt={diory.id} />
