@@ -124,20 +124,25 @@ const App: React.FC = () => {
           {diographInFocus &&
             Object.values(diographInFocus).map((diory) => (
               <div key={diory.id} className="diory">
-                <a
-                  href={
-                    diory &&
-                    diory.data &&
-                    diory.data[0].contentId &&
-                    diory.data[0].encodingFormat
-                      ? `http://localhost:3000/content?cid=${diory.data[0].contentId}&mime=${diory.data[0].encodingFormat}`
-                      : ""
-                  }
-                >
-                  {diory.image && (
-                    <img height="100" src={diory.image} alt={diory.id} />
+                {diory &&
+                  diory.data &&
+                  diory.data[0].contentId &&
+                  diory.data[0].encodingFormat && (
+                    <div>
+                      <a
+                        href={`http://localhost:3000/room-2/content?cid=${diory.data[0].contentId}&mime=${diory.data[0].encodingFormat}`}
+                      >
+                        CONTENT
+                      </a>
+                    </div>
                   )}
-                </a>
+                {diory.image && (
+                  <a
+                    href={`http://localhost:3000/room-2/thumbnail?dioryId=${diory.id}`}
+                  >
+                    <img height="100" src={diory.image} alt={diory.id} />
+                  </a>
+                )}
                 <div>{diory.text || diory.id}</div>
               </div>
             ))}
