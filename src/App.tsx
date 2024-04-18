@@ -28,14 +28,14 @@ const App: React.FC = () => {
     }
   };
 
-  // const handleConnectionClick = (connectionData: ConnectionData) => {
-  //   if (connectionData.address === connectionInFocus?.address) {
-  //     handleRoomClick(roomInFocusId || "never-gonna-happe");
-  //     return;
-  //   }
-  //   setConnectionInFocus(connectionData);
-  //   setDiographInFocus(connectionData.diograph);
-  // };
+  const handleConnectionClick = (connectionData: ConnectionData) => {
+    if (connectionData.address === connectionInFocus?.address) {
+      handleRoomClick(roomInFocusId || "never-gonna-happe");
+      return;
+    }
+    setConnectionInFocus(connectionData);
+    setDiographInFocus(connectionData.diograph);
+  };
 
   useEffect(() => {
     fetchRoomsData();
@@ -70,11 +70,11 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* <div>
-        Connections
+      {roomInFocusId && (
         <div>
-          {rooms[roomInFocusId || "never-gonna-happen"]?.connections.map(
-            (connectionData) => (
+          Connections
+          <div>
+            {(rooms[roomInFocusId]?.connections || []).map((connectionData) => (
               <button
                 key={connectionData.address}
                 onClick={() => handleConnectionClick(connectionData)}
@@ -87,17 +87,19 @@ const App: React.FC = () => {
               >
                 {connectionData.address}
               </button>
-            )
-          )}
+            ))}
+          </div>
         </div>
-      </div> */}
+      )}
 
-      <div>
-        <Grid
-          diograph={diographInFocus}
-          baseUrl={`${baseUrl}/${roomInFocusId}`}
-        />
-      </div>
+      {roomInFocusId && (
+        <div>
+          <Grid
+            diograph={diographInFocus}
+            baseUrl={`${baseUrl}/${roomInFocusId}`}
+          />
+        </div>
+      )}
     </div>
   );
 };
