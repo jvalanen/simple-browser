@@ -1,12 +1,16 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-// import axios from "axios";
-import data from "./data.json";
-import dataDiograph from "./data-diograph.json";
+import axios from "axios";
 
-const getData = () => {
-  data.rooms[0].diograph = dataDiograph;
-  return data;
+const getData = async () => {
+  const response = await axios.get<Data>("http://localhost:3000/rooms/room-1");
+  const diographResponse = await axios.get<Data>(
+    "http://localhost:3000/rooms/room-1/diograph"
+  );
+
+  response.data.rooms[0].diograph = diographResponse.data;
+
+  return response;
 };
 
 interface ConnectionData {
@@ -55,22 +59,33 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        // const response = await axios.get<Data>("https://api.example.com/data");
-        const response = { data: getData() };
+        const response = await getData();
         setData(response.data);
       } catch (error) {
-        setError("Error fetching data");
+        setError("Error fetching data: " + error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    const fetchData2 = async () => {
+      setLoading(true);
+      try {
+        const response = await getData();
+        setRoomInFocus(response.data.rooms[0]);
+        setDiographInFocus(response.data.rooms[0].diograph);
+      } catch (error) {
+        setError("Error fetching data2: " + error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const data = getData();
-    setRoomInFocus(data && data.rooms[0]);
-    setDiographInFocus(data && data.rooms[0].diograph);
+    fetchData().then(() => {
+      fetchData2();
+    });
   }, []);
 
   if (loading) return <div>Loading...</div>;
@@ -130,7 +145,7 @@ const App: React.FC = () => {
                   diory.data[0].encodingFormat && (
                     <div>
                       <a
-                        href={`http://localhost:3000/room-2/content?cid=${diory.data[0].contentId}&mime=${diory.data[0].encodingFormat}`}
+                        href={`http://localhost:3000/room-1/content?cid=${diory.data[0].contentId}&mime=${diory.data[0].encodingFormat}`}
                       >
                         CONTENT
                       </a>
@@ -138,7 +153,7 @@ const App: React.FC = () => {
                   )}
                 {diory.image && (
                   <a
-                    href={`http://localhost:3000/room-2/thumbnail?dioryId=${diory.id}`}
+                    href={`http://localhost:3000/room-1/thumbnail?dioryId=${diory.id}`}
                   >
                     <img height="100" src={diory.image} alt={diory.id} />
                   </a>
