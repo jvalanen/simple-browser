@@ -5,7 +5,7 @@ interface Diory {
   image?: string;
   text?: string;
   data?: {
-    contentId: string;
+    contentUrl: string;
     encodingFormat: string;
   }[];
 }
@@ -22,11 +22,11 @@ const Grid: React.FC<GridProps> = ({ diograph, baseUrl }) => (
         <div key={diory.id} className="diory">
           {diory &&
             diory.data &&
-            diory.data[0].contentId &&
+            diory.data[0].contentUrl &&
             diory.data[0].encodingFormat && (
               <div>
                 <a
-                  href={`${baseUrl}/content?cid=${diory.data[0].contentId}&mime=${diory.data[0].encodingFormat}`}
+                  href={`${baseUrl}/content?cid=${diory.data[0].contentUrl}&mime=${diory.data[0].encodingFormat}`}
                 >
                   CONTENT
                 </a>

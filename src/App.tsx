@@ -41,10 +41,10 @@ const App: React.FC = () => {
     fetchRoomsData();
   }, []);
 
+  // This is a silly way to set initial roomInFocus (after fetching rooms data...)
   useEffect(() => {
     const roomKeys = Object.keys(rooms);
-    if (roomKeys.length > 0) {
-      console.log(roomKeys[0]);
+    if (roomKeys.length > 0 && !roomInFocusId) {
       handleRoomClick(roomKeys[0]);
     }
   }, [rooms]);
