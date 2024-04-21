@@ -1,32 +1,34 @@
 import axios from "axios";
 import { useState } from "react";
+import {
+  validateConnectionData,
+  validateDiograph,
+  validateRoomConfigData,
+} from "@diograph/diograph/validator";
+import {
+  RoomConfigData,
+  ConnectionData,
+  IDiographObject,
+} from "@diograph/diograph/types";
 
-interface RoomIndexData {
+const baseUrl = "http://localhost:3000";
+
+// custom type, doesn't have validator...
+interface CustomRoomObject {
   id: string;
   address: string;
   clientType: string;
-}
-const baseUrl = "http://localhost:3000";
-
-interface ConnectionData {
-  address: string;
-  contentUrls: object;
-  contentClientType: string;
-  diograph?: object;
-}
-
-interface RoomData {
-  id: string;
   connections: ConnectionData[];
-  diograph?: object;
+  diograph?: IDiographObject;
 }
 
-interface RoomsData {
-  [index: string]: RoomData | null;
+// custom type
+interface RoomConfigDataStore {
+  [index: string]: CustomRoomObject | null;
 }
 
 const useData = () => {
-  const [rooms, setRooms] = useState<RoomsData>({});
+  const [rooms, setRooms] = useState<RoomConfigDataStore>({});
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,12 +36,22 @@ const useData = () => {
   const fetchRoomsData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get<RoomIndexData[]>(`${baseUrl}/rooms`);
-      const roomsIndexData: RoomsData = {};
-      response.data.forEach((roomIndexData) => {
-        roomsIndexData[roomIndexData.id] = null;
+      const response = await axios.get<RoomConfigData[]>(`${baseUrl}/rooms`);
+
+      // Validate data from http API
+      response.data.forEach((roomApiData) => {
+        validateRoomConfigData(roomApiData);
       });
-      setRooms(roomsIndexData);
+
+      // Create empty/null objects with room ids
+      const roomConfigDataWithIdsObject: RoomConfigDataStore = {};
+      response.data.forEach((roomConfigData) => {
+        if (!roomConfigData.id)
+          throw new Error("RoomConfigData.id is undefined");
+        roomConfigDataWithIdsObject[roomConfigData.id] = null;
+      });
+
+      setRooms(roomConfigDataWithIdsObject);
     } catch (error) {
       setError("Error fetching data: " + error);
     } finally {
@@ -50,12 +62,19 @@ const useData = () => {
   const fetchRoomData = async (roomId: string) => {
     setLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response = await axios.get<any>(`${baseUrl}/rooms/${roomId}`);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const diographResponse = await axios.get<any>(
+      const response = await axios.get<CustomRoomObject>(
+        `${baseUrl}/rooms/${roomId}`
+      );
+      // => onko tässä id mukana?
+
+      response.data.connections.forEach((connectionData: ConnectionData) => {
+        validateConnectionData(connectionData);
+      });
+
+      const diographResponse = await axios.get<IDiographObject>(
         `${baseUrl}/rooms/${roomId}/diograph`
       );
+      validateDiograph(diographResponse.data);
 
       response.data.diograph = diographResponse.data;
 
@@ -72,5 +91,3 @@ const useData = () => {
 };
 
 export { useData, baseUrl };
-
-export type { RoomData, ConnectionData };

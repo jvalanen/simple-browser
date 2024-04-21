@@ -1,17 +1,8 @@
+import { IDiographObject } from "@diograph/diograph/types";
 import React from "react";
 
-interface Diory {
-  id: string;
-  image?: string;
-  text?: string;
-  data?: {
-    contentUrl: string;
-    encodingFormat: string;
-  }[];
-}
-
 interface GridProps {
-  diograph: { [key: string]: Diory };
+  diograph: IDiographObject | null | undefined;
   baseUrl: string;
 }
 

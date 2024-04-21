@@ -1,7 +1,8 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import Grid from "./Grid";
-import { ConnectionData, RoomData, baseUrl, useData } from "./useData";
+import { baseUrl, useData } from "./useData";
+import { ConnectionData, IDiographObject } from "@diograph/diograph/types";
 
 const App: React.FC = () => {
   const [roomInFocusId, setRoomInFocusId] = useState<string | undefined>(
@@ -11,7 +12,7 @@ const App: React.FC = () => {
     ConnectionData | undefined
   >(undefined);
   const [diographInFocus, setDiographInFocus] = useState<
-    object | null | undefined
+    IDiographObject | null | undefined
   >(null);
 
   const { rooms, loading, error, fetchRoomsData, fetchRoomData } = useData();
